@@ -94,7 +94,8 @@ app.post('/artist', (req, res) => {
 app.get('/song', (req, res) => {
     console.log(`In /songs GET`);
     let sqlQuery = `
-        
+        SELECT * FROM "song"
+        ORDER BY "title";
         `;
     pool.query(sqlQuery).then((dbResponse) => {
         console.log('song get: ', dbResponse.rows);
