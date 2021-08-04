@@ -1,11 +1,20 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const postgres = require('pg');
 
 const app = express();
 const PORT = 5000;
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static('server/public'));
+
+// Create a connection "pool" to our postgres DB
+const pool = new postgres.Pool({
+    database: 'jazzy_sql',
+    // optional params
+    host: 'localhost',
+    port: 5432
+});
 
 app.listen(PORT, () => {
     console.log('listening on port', PORT)
@@ -50,22 +59,71 @@ const songList = [
 
 app.get('/artist', (req, res) => {
     console.log(`In /songs GET`);
-    res.send(artistList);
+    let sqlQuery = `
+        SELECT * FROM "artist"
+        ORDER BY "birthdate" DESC;
+        `;
+    pool.query(sqlQuery).then((dbResponse) => {
+        // console.log(dbResponse.rows);
+        res.send(dbResponse.rows);
+    }).catch((error) => {
+        console.log('Fetching data failed.', error);
+        res.sendStatus(500);
+    })
 });
 
 app.post('/artist', (req, res) => {
-    artistList.push(req.body);
-    res.sendStatus(201);
+    let sqlQuery = `
+        INSERT INTO "artist"
+            ("name", "birthdate")
+        VALUES
+            ($1, $2)
+        `;
+    let sqlParameters = [
+        req.body.name,
+        req.body.birthdate
+    ];
+    pool.query(sqlQuery, sqlParameters).then((dbResponse) => {
+        res.sendStatus(201);
+    }).catch((error) => {
+        console.log('Failed to post data.', error);
+        res.sendStatus(500);
+    })
 });
 
 app.get('/song', (req, res) => {
     console.log(`In /songs GET`);
-    res.send(songList);
+    let sqlQuery = `
+        SELECT * FROM "song"
+        ORDER BY "title";
+        `;
+    pool.query(sqlQuery).then((dbResponse) => {
+        // console.log('song get: ', dbResponse.rows);
+        res.send(dbResponse.rows);
+    }).catch((error) => {
+        console.log('Songs failed to GET', error);
+        res.sendStatus(500);
+    })
 });
 
 app.post('/song', (req, res) => {
-    songList.push(req.body);
-    res.sendStatus(201);
+    let sqlQuery = `
+        INSERT INTO "song"
+            ("title", "length", "released")
+        VALUES
+            ($1, $2, $3)
+        `;
+    let sqlParameters = [
+        req.body.title,
+        req.body.length,
+        req.body.released
+    ]
+    pool.query(sqlQuery, sqlParameters).then((dbResponse) => {
+        res.send(dbResponse.rows);
+    }).catch((error) => {
+        console.log('Failed to post song', error);
+        res.sendStatus(500);
+    })
 });
 
 
