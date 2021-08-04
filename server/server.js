@@ -64,29 +64,31 @@ app.get('/artist', (req, res) => {
         ORDER BY "birthdate" DESC;
         `;
     pool.query(sqlQuery).then((dbResponse) => {
-        console.log(dbResponse.rows);
-        send(dbResponse.rows);
+        // console.log(dbResponse.rows);
+        res.send(dbResponse.rows);
     }).catch((error) => {
         console.log('Fetching data failed.', error);
         res.sendStatus(500);
     })
-
-
-    res.send(artistList);
 });
 
 app.post('/artist', (req, res) => {
-    artistList.push(req.body);
     let sqlQuery = `
-    
-    `;
-    pool.query((sqlQuery)).then((dbResponse) => {
-
+        INSERT INTO "artist"
+            ("name", "birthdate")
+        VALUES
+            ($1, $2)
+        `;
+    let sqlParameters = [
+        req.body.name,
+        req.body.birthdate
+    ];
+    pool.query(sqlQuery, sqlParameters).then((dbResponse) => {
+        res.sendStatus(201);
     }).catch((error) => {
         console.log('Failed to post data.', error);
         res.sendStatus(500);
     })
-    res.sendStatus(201);
 });
 
 app.get('/song', (req, res) => {
