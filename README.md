@@ -34,7 +34,7 @@ Using the ERD above:
 - [x] Write the SQL to create both of the tables (Note: Make sure to use the table names show.)
 - [x] Write INSERT statements to add the sample data provided in the `server.js` file. 
 - [x] Create the tables and insert the test data using Postico.
-- [ ] Add the SQL to the `database.sql` file. This file will help others interested in this project, get it setup correctly if they pick it up from GitHub.
+- [x] Add the SQL to the `database.sql` file. This file will help others interested in this project, get it setup correctly if they pick it up from GitHub.
 
 ### Update the Server-side Code
 
