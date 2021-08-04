@@ -93,7 +93,16 @@ app.post('/artist', (req, res) => {
 
 app.get('/song', (req, res) => {
     console.log(`In /songs GET`);
-    res.send(songList);
+    let sqlQuery = `
+        
+        `;
+    pool.query(sqlQuery).then((dbResponse) => {
+        console.log('song get: ', dbResponse.rows);
+        res.send(dbResponse.rows);
+    }).catch((error) => {
+        console.log('Songs failed to GET', error);
+        res.sendStatus(500);
+    })
 });
 
 app.post('/song', (req, res) => {
