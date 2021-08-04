@@ -42,12 +42,12 @@ Using the ERD above:
 - [x] Update the `\artist` GET route to get data from the database. Sort the data by birthdate, youngest to oldest.
 - [x] Update the `\artist` POST route to store data in the database. 
 - [x] Update the `\song` GET route to get data from the database. Sort the data by title.
-- [ ] Update the `\song` POST route to store data in the database.  
+- [x] Update the `\song` POST route to store data in the database.  
 
 > NOTE: You should only need to modify server side code if you've named things correctly. You can continue to the existing client code for testing.
 
 ## Stretch
 
-- [ ] Move the `pool` configuration out of `server.js` and into a `pool.js` module file.
+- [x] Move the `pool` configuration out of `server.js` and into a `pool.js` module file.
 - [ ] Move the `\artist` routes to an artist router file. 
 - [ ] Move the `\song` routes to a song router file.
