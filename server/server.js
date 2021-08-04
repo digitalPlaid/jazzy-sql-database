@@ -1,11 +1,20 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const postgres = require('pg');
 
 const app = express();
 const PORT = 5000;
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static('server/public'));
+
+// Create a connection "pool" to our postgres DB
+const pool = new postgres.Pool({
+    database: 'jazzy_sql',
+    // optional params
+    host: 'localhost',
+    port: 5432
+});
 
 app.listen(PORT, () => {
     console.log('listening on port', PORT)
@@ -50,11 +59,33 @@ const songList = [
 
 app.get('/artist', (req, res) => {
     console.log(`In /songs GET`);
+    let sqlQuery = `
+        SELECT * FROM "artist"
+        ORDER BY "birthdate" DESC;
+        `;
+    pool.query(sqlQuery).then((dbResponse) => {
+        console.log(dbResponse.rows);
+        send(dbResponse.rows);
+    }).catch((error) => {
+        console.log('Fetching data failed.', error);
+        res.sendStatus(500);
+    })
+
+
     res.send(artistList);
 });
 
 app.post('/artist', (req, res) => {
     artistList.push(req.body);
+    let sqlQuery = `
+    
+    `;
+    pool.query((sqlQuery)).then((dbResponse) => {
+
+    }).catch((error) => {
+        console.log('Failed to post data.', error);
+        res.sendStatus(500);
+    })
     res.sendStatus(201);
 });
 
