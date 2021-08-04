@@ -98,7 +98,7 @@ app.get('/song', (req, res) => {
         ORDER BY "title";
         `;
     pool.query(sqlQuery).then((dbResponse) => {
-        console.log('song get: ', dbResponse.rows);
+        // console.log('song get: ', dbResponse.rows);
         res.send(dbResponse.rows);
     }).catch((error) => {
         console.log('Songs failed to GET', error);
@@ -107,8 +107,23 @@ app.get('/song', (req, res) => {
 });
 
 app.post('/song', (req, res) => {
-    songList.push(req.body);
-    res.sendStatus(201);
+    let sqlQuery = `
+        INSERT INTO "song"
+            ("title", "length", "released")
+        VALUES
+            ($1, $2, $3)
+        `;
+    let sqlParameters = [
+        req.body.title,
+        req.body.length,
+        req.body.released
+    ]
+    pool.query(sqlQuery, sqlParameters).then((dbResponse) => {
+        res.send(dbResponse.rows);
+    }).catch((error) => {
+        console.log('Failed to post song', error);
+        res.sendStatus(500);
+    })
 });
 
 
